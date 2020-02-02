@@ -9,9 +9,10 @@ file from an Android APK.
 
 ## Usage
 
-    python extract.py
+To extract the bundle from an APK:
 
-This will look for an `app.apk` in the current directory. From the APK file,
-the script will try to extract `assets/index.android.bundle`. It will extract
-it into a `index.android.bundle` file in the current directory. The bundle
-will be "beautified" by `jsbeautify`.
+    python extract.py foo.apk
+
+To extract the bundle from connected device using `adb`:
+
+    python extract.py com.package.someapp
