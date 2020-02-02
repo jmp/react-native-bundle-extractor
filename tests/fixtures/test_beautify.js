@@ -1,0 +1,1 @@
+const f=()=>{const a=42;return a;};const b=f();
