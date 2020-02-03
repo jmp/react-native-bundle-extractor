@@ -56,7 +56,7 @@ def fetch_apk_from_device(package, out_path):
     print(f'Looking for package...', end='')
     if package not in list_packages():
         print(' FAIL')
-        print(f'Package {package} was not found on device!')
+        print(f'Package "{package}" was not found on device!')
         sys.exit(1)
     print(' OK')
 
@@ -82,7 +82,7 @@ def process_apk(path, bundle_in_path):
         print(' OK')
     except KeyError:
         print(' FAIL')
-        print(f'Bundle {bundle_in_path} was not found in the APK!')
+        print(f'Bundle "{bundle_in_path}" was not found in the APK!')
         sys.exit(1)
 
     print(f'Beautifying bundle...', end='')
