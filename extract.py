@@ -13,8 +13,9 @@ DEFAULT_BUNDLE_FILENAME = 'index.android.bundle'
 
 def extract(zip_path, in_path, out_path):
     with zipfile.ZipFile(zip_path) as z:
+        data = z.read(in_path)
         with open(out_path, 'wb') as f:
-            f.write(z.read(in_path))
+            f.write(data)
 
 
 def beautify_js(in_path, out_path):
@@ -69,11 +70,12 @@ def fetch_apk_from_device(package, out_path):
 
 
 def show_usage():
-    print(f'usage: {sys.argv[0]} APK/PACKAGE')
+    print(f'usage: {sys.argv[0]} apk/package [bundle_filename]')
     sys.exit(1)
 
 
-def process_apk(path):
+def process_apk(path, bundle_in_path):
+    bundle_out_path = os.path.basename(bundle_in_path)
     try:
         print(f'Extracting bundle...', end='')
         extract(path, bundle_in_path, bundle_out_path)
@@ -90,21 +92,24 @@ def process_apk(path):
     sys.exit(0)
 
 
-def process_package(package):
+def process_package(package, bundle_filename):
     with tempfile.NamedTemporaryFile(delete=False) as f:
         fetch_apk_from_device(package, f.name)
-        process_apk(f.name)
+        process_apk(f.name, bundle_filename)
     sys.exit(0)
 
 
 if __name__ == '__main__':
-    bundle_in_path = f'assets/{DEFAULT_BUNDLE_FILENAME}'
-    bundle_out_path = DEFAULT_BUNDLE_FILENAME
-
-    if len(sys.argv) != 2:
+    if not 1 < len(sys.argv) < 4:
         show_usage()
-    apk_or_package = sys.argv[-1]
+
+    apk_or_package = sys.argv[1]
+    try:
+        bundle_path = f'assets/{sys.argv[2]}'
+    except IndexError:
+        bundle_path = f'assets/{DEFAULT_BUNDLE_FILENAME}'
+
     if os.path.exists(apk_or_package):
-        process_apk(apk_or_package)
+        process_apk(apk_or_package, bundle_path)
     else:
-        process_package(apk_or_package)
+        process_package(apk_or_package, bundle_path)
