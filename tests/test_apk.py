@@ -1,5 +1,5 @@
 # noinspection PyUnresolvedReferences
-from .fixtures import temporary_path
+from .fixtures import temporary_path  # noqa: F401
 from .helpers import get_relative_path
 from extractor.apk import extract
 
