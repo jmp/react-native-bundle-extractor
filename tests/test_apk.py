@@ -4,7 +4,7 @@ from .helpers import get_relative_path
 from extractor.apk import extract
 
 
-def test_extract(temporary_path):
+def test_extract(temporary_path):  # noqa: F811
     zip_path = get_relative_path('fixtures/test_extract.zip')
     in_path = 'some/directory/test.txt'
     extract(zip_path, in_path, temporary_path)
