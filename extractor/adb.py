@@ -1,20 +1,23 @@
 import subprocess
-import sys
+
+from extractor.decorators import with_logging
+from extractor.exception import FriendlyError
 
 
-def list_packages():
+@with_logging('Listing packages')
+def get_packages():
     result = subprocess.run(
         'adb shell pm list packages'.split(),
         capture_output=True,
     )
     if result.stderr:
-        raise RuntimeError(result.stderr.decode('utf-8'))
-    print(f'packages: {result.stderr}')
+        raise FriendlyError(result.stderr.decode('utf-8'))
     lines = result.stdout.strip().splitlines()
     return [line.decode('utf-8').replace('package:', '') for line in lines]
 
 
-def get_package_path(package):
+@with_logging('Finding package path')
+def find_package_path(package):
     result = subprocess.run(
         f'adb shell pm path {package}'.split(),
         capture_output=True,
@@ -23,6 +26,7 @@ def get_package_path(package):
     return result.stdout.decode('utf-8').strip().replace('package:', '')
 
 
+@with_logging('Pulling from device')
 def pull_path(path, out_path):
     result = subprocess.run(
         f'adb pull {path} {out_path}'.split(),
@@ -32,23 +36,14 @@ def pull_path(path, out_path):
     return result.stdout.decode('utf-8').strip()
 
 
+@with_logging('Finding package')
+def verify_package_exists(package, packages):
+    if package not in packages:
+        raise FriendlyError(f'Package "{package}" was not found on device!')
+
+
 def pull_apk(package, out_path):
-    print(f'Looking for package...', end='')
-    try:
-        if package not in list_packages():
-            print(' FAIL')
-            print(f'Package "{package}" was not found on device!')
-            sys.exit(1)
-    except RuntimeError as e:
-        print(' FAIL')
-        print(f'Could not get package list: {e}')
-        sys.exit(1)
-    print(' OK')
-
-    print(f'Getting package path...', end='')
-    package_path = get_package_path(package)
-    print(' OK')
-
-    print(f'Pulling APK...', end='')
+    packages = get_packages()
+    verify_package_exists(package, packages)
+    package_path = find_package_path(package)
     pull_path(package_path, out_path)
-    print(' OK')

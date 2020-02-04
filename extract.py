@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -u
 
 import os
 import sys
@@ -6,6 +6,7 @@ import tempfile
 
 from extractor.adb import pull_apk
 from extractor.apk import is_apk
+from extractor.exception import FriendlyError
 from extractor.package import is_valid_package_name
 from extractor.bundle import beautify
 from extractor.apk import extract
@@ -20,18 +21,8 @@ def show_usage():
 
 def process_apk(path, bundle_in_path):
     bundle_out_path = os.path.basename(bundle_in_path)
-    try:
-        print(f'Extracting bundle...', end='')
-        extract(path, bundle_in_path, bundle_out_path)
-        print(' OK')
-    except KeyError:
-        print(' FAIL')
-        print(f'Bundle "{bundle_in_path}" was not found in the APK!')
-        sys.exit(1)
-
-    print(f'Beautifying bundle...', end='')
+    extract(path, bundle_in_path, bundle_out_path)
     beautify(bundle_out_path, bundle_out_path)
-    print(' OK')
 
     sys.exit(0)
 
@@ -47,15 +38,18 @@ if __name__ == '__main__':
     if not 1 < len(sys.argv) < 4:
         show_usage()
 
-    apk_or_package = sys.argv[1]
     try:
-        bundle_path = f'assets/{sys.argv[2]}'
-    except IndexError:
-        bundle_path = f'assets/{DEFAULT_BUNDLE_FILENAME}'
+        apk_or_package = sys.argv[1]
+        try:
+            bundle_path = f'assets/{sys.argv[2]}'
+        except IndexError:
+            bundle_path = f'assets/{DEFAULT_BUNDLE_FILENAME}'
 
-    if is_apk(apk_or_package):
-        process_apk(apk_or_package, bundle_path)
-    elif is_valid_package_name(apk_or_package):
-        process_package(apk_or_package, bundle_path)
-    else:
-        print(f'{apk_or_package} is not an APK or a valid package name!')
+        if is_apk(apk_or_package):
+            process_apk(apk_or_package, bundle_path)
+        elif is_valid_package_name(apk_or_package):
+            process_package(apk_or_package, bundle_path)
+        else:
+            print(f'"{apk_or_package}" is not an APK or a valid package name!')
+    except FriendlyError as e:
+        print(e)

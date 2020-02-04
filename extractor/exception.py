@@ -1,0 +1,2 @@
+class FriendlyError(RuntimeError):
+    pass
