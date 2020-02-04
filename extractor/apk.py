@@ -11,7 +11,7 @@ def extract(zip_path, in_path, out_path):
             data = z.read(in_path)
             with open(out_path, 'wb') as f:
                 f.write(data)
-    except KeyError as e:
+    except KeyError:
         raise FriendlyError(f'Bundle file "{in_path}" not found')
 
 
