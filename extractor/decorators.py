@@ -1,7 +1,5 @@
 import functools
 
-from .exception import FriendlyError
-
 
 def with_logging(message):
     def decorator(function):
