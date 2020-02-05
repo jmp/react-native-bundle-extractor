@@ -4,7 +4,7 @@ import os
 import sys
 import tempfile
 
-from extractor.adb import pull_apk
+from extractor.adb import pull_apk, check_adb
 from extractor.apk import is_apk
 from extractor.package import is_valid_package_name
 from extractor.bundle import beautify
@@ -25,6 +25,7 @@ def process_apk(path, bundle_in_path):
 
 
 def process_package(package, bundle_filename):
+    check_adb()
     with tempfile.NamedTemporaryFile(delete=False) as f:
         pull_apk(package, f.name)
         process_apk(f.name, bundle_filename)
@@ -36,8 +37,7 @@ if __name__ == '__main__':
         sys.exit(1)
     try:
         try:
-            bundle_filename = sys.argv[2]
-            bundle_path = f'assets/{bundle_filename}'
+            bundle_path = f'assets/{sys.argv[2]}'
         except IndexError:
             bundle_path = f'assets/{DEFAULT_BUNDLE_FILENAME}'
         apk_or_package = sys.argv[1]

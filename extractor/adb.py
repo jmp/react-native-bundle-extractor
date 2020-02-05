@@ -1,6 +1,14 @@
+import shutil
 import subprocess
 
 from extractor.decorators import with_logging
+
+
+@with_logging('Checking ADB')
+def check_adb():
+    if shutil.which('adb') is None:
+        raise RuntimeError('"adb" not found in PATH. Make sure you '
+                           'have Android SDK Platform-Tools installed')
 
 
 @with_logging('Listing packages')
