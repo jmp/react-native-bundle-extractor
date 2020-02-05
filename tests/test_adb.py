@@ -26,16 +26,14 @@ def test_check_adb_does_not_raise_exception_if_adb_is_in_path(mock_which):
 def test_get_packages_adb_returns_packages(mock_run):
     mock_run.return_value = Mock(stdout=b'''
 package:com.android.cts.priv.ctsshim
-package:com.google.android.youtube
 package:com.android.internal.display.cutout.emulation.corner
-package:com.google.android.ext.services
-package:com.android.internal.display.cutout.emulation.double
 package:com.android.providers.telephony
 '''.strip(), stderr=None)
-    try:
-        get_packages()
-    except AdbError:
-        pytest.fail('Unexpected AdbError')
+    assert get_packages() == [
+        'com.android.cts.priv.ctsshim',
+        'com.android.internal.display.cutout.emulation.corner',
+        'com.android.providers.telephony',
+    ]
 
 
 @patch('subprocess.run')
