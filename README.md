@@ -20,3 +20,7 @@ To extract the bundle from connected device using `adb`:
 To customize the bundle filename, you can pass an additional parameter:
 
     python extract.py com.package.someapp index.android.bundle
+
+## Run tests
+
+    pytest
