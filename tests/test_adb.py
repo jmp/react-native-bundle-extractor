@@ -1,5 +1,4 @@
-from subprocess import CompletedProcess
-from unittest.mock import patch, create_autospec, Mock
+from unittest.mock import patch, Mock
 
 import pytest
 
