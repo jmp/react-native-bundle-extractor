@@ -8,6 +8,10 @@ class ExecutableNotFoundError(RuntimeError):
     pass
 
 
+class AdbError(RuntimeError):
+    pass
+
+
 @with_logging('Checking ADB')
 def check_adb():
     if shutil.which('adb') is None:
@@ -24,7 +28,7 @@ def get_packages():
         capture_output=True,
     )
     if result.stderr:
-        raise RuntimeError(result.stderr.decode('utf-8'))
+        raise AdbError(result.stderr.decode('utf-8'))
     lines = result.stdout.strip().splitlines()
     return [line.decode('utf-8').replace('package:', '') for line in lines]
 
@@ -36,6 +40,8 @@ def find_package_path(package):
         capture_output=True,
         check=True,
     )
+    if result.stderr:
+        raise RuntimeError(result.stderr.decode('utf-8'))
     return result.stdout.decode('utf-8').strip().replace('package:', '')
 
 

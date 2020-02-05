@@ -3,6 +3,10 @@ import zipfile
 from .decorators import with_logging
 
 
+class BundleNotFoundError(RuntimeError):
+    pass
+
+
 @with_logging('Extracting bundle')
 def extract(zip_path, in_path, out_path):
     try:
@@ -11,7 +15,7 @@ def extract(zip_path, in_path, out_path):
             with open(out_path, 'wb') as f:
                 f.write(data)
     except KeyError:
-        raise RuntimeError(f'Bundle file "{in_path}" not found')
+        raise BundleNotFoundError(f'Bundle file "{in_path}" not found')
 
 
 @with_logging('Checking if APK exists')
