@@ -1,6 +1,6 @@
 import re
 
-from extractor.decorators import with_logging
+from .decorators import with_logging
 
 
 @with_logging('Checking package format')

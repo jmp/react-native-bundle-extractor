@@ -1,6 +1,6 @@
 import jsbeautifier
 
-from extractor.decorators import with_logging
+from .decorators import with_logging
 
 
 @with_logging('Beautifying')
