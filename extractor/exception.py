@@ -1,2 +1,0 @@
-class FriendlyError(RuntimeError):
-    pass

@@ -1,7 +1,6 @@
 import zipfile
 
 from extractor.decorators import with_logging
-from extractor.exception import FriendlyError
 
 
 @with_logging('Extracting bundle')
@@ -12,7 +11,7 @@ def extract(zip_path, in_path, out_path):
             with open(out_path, 'wb') as f:
                 f.write(data)
     except KeyError:
-        raise FriendlyError(f'Bundle file "{in_path}" not found')
+        raise RuntimeError(f'Bundle file "{in_path}" not found')
 
 
 @with_logging('Checking if APK exists')

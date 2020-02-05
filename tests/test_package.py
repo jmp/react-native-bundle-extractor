@@ -47,5 +47,5 @@ parameters = [(name, True) for name in valid_names] + \
 
 
 @pytest.mark.parametrize("test_input,expected", parameters)
-def test_eval(test_input, expected):
+def test_is_valid_package_name(test_input, expected):
     assert is_valid_package_name(test_input) == expected

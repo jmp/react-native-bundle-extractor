@@ -1,7 +1,6 @@
 import subprocess
 
 from extractor.decorators import with_logging
-from extractor.exception import FriendlyError
 
 
 @with_logging('Listing packages')
@@ -11,7 +10,7 @@ def get_packages():
         capture_output=True,
     )
     if result.stderr:
-        raise FriendlyError(result.stderr.decode('utf-8'))
+        raise RuntimeError(result.stderr.decode('utf-8'))
     lines = result.stdout.strip().splitlines()
     return [line.decode('utf-8').replace('package:', '') for line in lines]
 
@@ -39,7 +38,7 @@ def pull_path(path, out_path):
 @with_logging('Finding package')
 def verify_package_exists(package, packages):
     if package not in packages:
-        raise FriendlyError(f'Package "{package}" was not found on device!')
+        raise RuntimeError(f'Package "{package}" was not found on device!')
 
 
 def pull_apk(package, out_path):
