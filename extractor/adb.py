@@ -12,6 +12,10 @@ class AdbError(RuntimeError):
     pass
 
 
+class NoSuchPackageError(RuntimeError):
+    pass
+
+
 @with_logging('Checking ADB')
 def check_adb():
     if shutil.which('adb') is None:
@@ -41,7 +45,7 @@ def find_package_path(package):
         check=True,
     )
     if result.stderr:
-        raise RuntimeError(result.stderr.decode('utf-8'))
+        raise AdbError(result.stderr.decode('utf-8'))
     return result.stdout.decode('utf-8').strip().replace('package:', '')
 
 
@@ -52,13 +56,15 @@ def pull_path(path, out_path):
         capture_output=True,
         check=True,
     )
+    if result.stderr:
+        raise AdbError(result.stderr.decode('utf-8'))
     return result.stdout.decode('utf-8').strip()
 
 
 @with_logging('Finding package')
 def verify_package_exists(package, packages):
     if package not in packages:
-        raise RuntimeError(f'Package "{package}" was not found on device!')
+        raise NoSuchPackageError(f'Package "{package}" was not found!')
 
 
 def pull_apk(package, out_path):
