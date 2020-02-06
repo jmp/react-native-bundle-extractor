@@ -65,10 +65,3 @@ def pull_path(path, out_path):
 def verify_package_exists(package, packages):
     if package not in packages:
         raise NoSuchPackageError(f'Package "{package}" was not found!')
-
-
-def pull_apk(package, out_path):
-    packages = get_packages()
-    verify_package_exists(package, packages)
-    package_path = find_package_path(package)
-    pull_path(package_path, out_path)
