@@ -31,3 +31,15 @@ def test_parse_args_has_default_bundle_filename():
     args = parse_args(['app.apk'])
     assert isinstance(args.bundle, str)
     assert len(args.bundle) > 0
+
+
+def test_parse_args_takes_output_path_as_optional_argument():
+    out_path = 'out.bundle'
+    args = parse_args(['app.apk', '--out', out_path])
+    assert args.out == out_path
+
+
+def test_parse_args_has_default_output_path():
+    args = parse_args(['app.apk'])
+    assert isinstance(args.bundle, str)
+    assert len(args.bundle) > 0

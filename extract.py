@@ -1,6 +1,5 @@
 #!/usr/bin/env python -u
 
-import os
 import sys
 import tempfile
 
@@ -18,8 +17,7 @@ from extractor.bundle import beautify
 from extractor.apk import extract
 
 
-def extract_bundle_from_apk(path, bundle_in_path):
-    bundle_out_path = os.path.basename(bundle_in_path)
+def extract_bundle_from_apk(path, bundle_in_path, bundle_out_path):
     extract(path, bundle_in_path, bundle_out_path)
     beautify(bundle_out_path, bundle_out_path)
 
@@ -41,11 +39,16 @@ def extract_bundle_from_device(package, bundle_filename):
 def run():
     try:
         args = parse_args(sys.argv[1:])
-        bundle_path = f'assets/{args.bundle}'
+        bundle_in_path = f'assets/{args.bundle}'
+        bundle_out_path = args.out
         if is_apk(args.source):
-            extract_bundle_from_apk(args.source, bundle_path)
+            extract_bundle_from_apk(
+                args.source,
+                bundle_in_path,
+                bundle_out_path,
+            )
         elif is_valid_package_name(args.source):
-            extract_bundle_from_device(args.source, bundle_path)
+            extract_bundle_from_device(args.source, bundle_in_path)
         else:
             raise RuntimeError(f'"{args.source}" is not an APK or an Android '
                                f'package name.')

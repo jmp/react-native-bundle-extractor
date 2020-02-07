@@ -13,7 +13,13 @@ def parse_args(args):
     parser.add_argument(
         '--bundle',
         metavar='FILENAME',
-        help='name of the JavaScript bundle file',
+        help='name of the JavaScript bundle file inside the APK',
+        default='index.android.bundle',
+    )
+    parser.add_argument(
+        '--out',
+        metavar='FILENAME',
+        help='path where the bundle should be extracted',
         default='index.android.bundle',
     )
     return parser.parse_args(args)
