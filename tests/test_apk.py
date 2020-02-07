@@ -1,24 +1,23 @@
 import pytest
 
-# noinspection PyUnresolvedReferences
-from .fixtures import temporary_path  # noqa: F401
 from .helpers import get_relative_path
 from extractor.apk import extract, is_apk, BundleNotFoundError
 
 
-def test_extract_path_exists(temporary_path):  # noqa: F811
+def test_extract_path_exists(tmp_path):
     zip_path = get_relative_path('fixtures/test_extract.zip')
     in_path = 'some/directory/test.txt'
-    extract(zip_path, in_path, temporary_path)
-    with open(temporary_path, 'rt') as f:
+    out_path = tmp_path / 'test.txt'
+    extract(zip_path, in_path, out_path)
+    with out_path.open('rt') as f:
         assert f.read() == 'This is a test file.'
 
 
-def test_extract_path_does_not_exist(temporary_path):  # noqa: F811
+def test_extract_path_does_not_exist(tmp_path):
     zip_path = get_relative_path('fixtures/test_extract.zip')
     in_path = 'this/does/not/exist'
     with pytest.raises(BundleNotFoundError):
-        extract(zip_path, in_path, temporary_path)
+        extract(zip_path, in_path, tmp_path / 'tmp.txt')
 
 
 def test_is_apk_succeeds_with_valid_apk():
