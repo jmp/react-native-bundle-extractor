@@ -12,16 +12,10 @@ from extractor.adb import (
     pull_path,
 )
 from extractor.apk import is_apk
+from extractor.args import parse_args
 from extractor.package import is_valid_package_name
 from extractor.bundle import beautify
 from extractor.apk import extract
-
-
-DEFAULT_BUNDLE_FILENAME = 'index.android.bundle'
-
-
-def show_usage():
-    print(f'usage: {sys.argv[0]} apk/package [bundle_filename]')
 
 
 def extract_bundle_from_apk(path, bundle_in_path):
@@ -44,31 +38,17 @@ def extract_bundle_from_device(package, bundle_filename):
         extract_bundle_from_apk(f.name, bundle_filename)
 
 
-def get_source(argv):
-    try:
-        return argv[1]
-    except IndexError:
-        show_usage()
-        sys.exit(1)
-
-
-def get_bundle_path(argv):
-    try:
-        return f'assets/{argv[2]}'
-    except IndexError:
-        return f'assets/{DEFAULT_BUNDLE_FILENAME}'
-
-
 def run():
     try:
-        source = get_source(sys.argv)
-        bundle_path = get_bundle_path(sys.argv)
-        if is_apk(source):
-            extract_bundle_from_apk(source, bundle_path)
-        elif is_valid_package_name(source):
-            extract_bundle_from_device(source, bundle_path)
+        args = parse_args(sys.argv[1:])
+        bundle_path = f'assets/{args.bundle}'
+        if is_apk(args.source):
+            extract_bundle_from_apk(args.source, bundle_path)
+        elif is_valid_package_name(args.source):
+            extract_bundle_from_device(args.source, bundle_path)
         else:
-            raise RuntimeError(f'"{source}" is not an APK or a package name.')
+            raise RuntimeError(f'"{args.source}" is not an APK or an Android '
+                               f'package name.')
     except KeyboardInterrupt:
         sys.exit(1)
     except RuntimeError as e:
