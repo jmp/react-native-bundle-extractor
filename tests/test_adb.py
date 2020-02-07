@@ -92,10 +92,7 @@ def test_pull_path_does_not_exist(mock_run):
 
 
 def test_verify_package_exists_success():
-    try:
-        verify_package_exists('com.example.app', ['com.example.app'])
-    except NoSuchPackageError:
-        pytest.fail('Unexpected NoSuchPackageError')
+    verify_package_exists('com.example.app', ['com.example.app'])
 
 
 def test_verify_package_exists_failure():
