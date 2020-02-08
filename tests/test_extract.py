@@ -1,9 +1,10 @@
 import io
 import zipfile
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from extract import extract_bundle_from_apk, pull_apk_from_device, \
-    extract_bundle_from_device
+    extract_bundle_from_device, run
+from .helpers import StringContaining
 
 
 def test_extract_bundle_from_apk(tmp_path):
@@ -63,3 +64,39 @@ def test_extract_bundle_from_device(
     extract_bundle_from_device(package, bundle)
     mock_pull_apk_from_device.assert_called_with(package, tmp_filename)
     mock_extract_bundle_from_apk.assert_called_with(tmp_filename, bundle)
+
+
+@patch('sys.exit')
+@patch('sys.stderr.write')
+@patch('extract.is_apk', Mock())
+@patch('extract.extract_bundle_from_apk', Mock())
+@patch('extract.extract_bundle_from_device', Mock())
+def test_run_prints_usage_when_run_without_arguments(mock_write, mock_exit):
+    run([])
+    mock_write.assert_any_call(StringContaining('usage:'))
+    mock_exit.assert_called_with(0)
+
+
+@patch('sys.exit', Mock())
+@patch('extract.is_apk', Mock(return_value=True))
+@patch('extract.extract_bundle_from_apk')
+def test_run_with_existing_apk(mock_extract_bundle_from_apk):
+    apk_path = 'app.apk'
+    run([apk_path])
+    mock_extract_bundle_from_apk.assert_called_with(
+        apk_path,
+        'assets/index.android.bundle',
+        'index.android.bundle',
+    )
+
+
+@patch('sys.exit', Mock())
+@patch('extract.is_apk', Mock(return_value=False))
+@patch('extract.extract_bundle_from_device')
+def test_run_with_package(mock_extract_bundle_from_device):
+    package = 'com.example.app'
+    run([package])
+    mock_extract_bundle_from_device.assert_called_with(
+        package,
+        'assets/index.android.bundle',
+    )
