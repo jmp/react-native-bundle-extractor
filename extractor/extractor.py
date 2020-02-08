@@ -28,10 +28,10 @@ def pull_apk_from_device(package, out_path):
     pull_path(package_path, out_path)
 
 
-def extract_bundle_from_device(package, bundle_filename):
+def extract_bundle_from_device(package, bundle_in_path, bundle_out_path):
     with tempfile.NamedTemporaryFile() as f:
         pull_apk_from_device(package, f.name)
-        extract_bundle_from_apk(f.name, bundle_filename)
+        extract_bundle_from_apk(f.name, bundle_in_path, bundle_out_path)
 
 
 def run(args):
@@ -46,7 +46,11 @@ def run(args):
                 bundle_out_path,
             )
         elif is_valid_package_name(parsed_args.source):
-            extract_bundle_from_device(parsed_args.source, bundle_in_path)
+            extract_bundle_from_device(
+                parsed_args.source,
+                bundle_in_path,
+                bundle_out_path,
+            )
         else:
             raise RuntimeError(f'"{parsed_args.source}" is not an APK or an '
                                f'Android package name.')

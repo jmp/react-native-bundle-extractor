@@ -62,12 +62,17 @@ def test_extract_bundle_from_device(
         mock_tmp,
 ):
     package = 'com.example.app'
-    bundle = 'index.android.bundle'
+    bundle_in_path = 'index.android.bundle.in'
+    bundle_out_path = 'index.android.bundle.out'
     tmp_filename = 'temporary_file'
     mock_tmp.return_value.__enter__.return_value.name = tmp_filename
-    extract_bundle_from_device(package, bundle)
+    extract_bundle_from_device(package, bundle_in_path, bundle_out_path)
     mock_pull_apk_from_device.assert_called_with(package, tmp_filename)
-    mock_extract_bundle_from_apk.assert_called_with(tmp_filename, bundle)
+    mock_extract_bundle_from_apk.assert_called_with(
+        tmp_filename,
+        bundle_in_path,
+        bundle_out_path,
+    )
 
 
 @patch('sys.exit')
@@ -102,6 +107,7 @@ def test_run_with_package(mock_extract_bundle_from_device):
     mock_extract_bundle_from_device.assert_called_with(
         package,
         'assets/index.android.bundle',
+        'index.android.bundle',
     )
 
 
