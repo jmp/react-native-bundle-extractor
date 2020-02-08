@@ -23,6 +23,7 @@ def extract_bundle_from_apk(path, bundle_in_path, bundle_out_path):
 
 
 def pull_apk_from_device(package, out_path):
+    check_adb()
     packages = get_packages()
     verify_package_exists(package, packages)
     package_path = find_package_path(package)
@@ -30,7 +31,6 @@ def pull_apk_from_device(package, out_path):
 
 
 def extract_bundle_from_device(package, bundle_filename):
-    check_adb()
     with tempfile.NamedTemporaryFile() as f:
         pull_apk_from_device(package, f.name)
         extract_bundle_from_apk(f.name, bundle_filename)

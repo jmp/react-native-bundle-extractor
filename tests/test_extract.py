@@ -2,7 +2,8 @@ import io
 import zipfile
 from unittest.mock import patch
 
-from extract import extract_bundle_from_apk, pull_apk_from_device
+from extract import extract_bundle_from_apk, pull_apk_from_device, \
+    extract_bundle_from_device
 
 
 def test_extract_bundle_from_apk(tmp_path):
@@ -45,3 +46,20 @@ def test_pull_apk_from_device(
         mock_find_package_path.return_value,
         out_path,
     )
+
+
+@patch('tempfile.NamedTemporaryFile')
+@patch('extract.pull_apk_from_device')
+@patch('extract.extract_bundle_from_apk')
+def test_extract_bundle_from_device(
+        mock_extract_bundle_from_apk,
+        mock_pull_apk_from_device,
+        mock_tmp,
+):
+    package = 'com.example.app'
+    bundle = 'index.android.bundle'
+    tmp_filename = 'temporary_file'
+    mock_tmp.return_value.__enter__.return_value.name = tmp_filename
+    extract_bundle_from_device(package, bundle)
+    mock_pull_apk_from_device.assert_called_with(package, tmp_filename)
+    mock_extract_bundle_from_apk.assert_called_with(tmp_filename, bundle)
