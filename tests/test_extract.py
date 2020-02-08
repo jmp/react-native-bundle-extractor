@@ -91,7 +91,6 @@ def test_run_with_existing_apk(mock_extract_bundle_from_apk):
 
 
 @patch('sys.exit', Mock())
-@patch('extract.is_apk', Mock(return_value=False))
 @patch('extract.extract_bundle_from_device')
 def test_run_with_package(mock_extract_bundle_from_device):
     package = 'com.example.app'
@@ -100,3 +99,26 @@ def test_run_with_package(mock_extract_bundle_from_device):
         package,
         'assets/index.android.bundle',
     )
+
+
+@patch('sys.exit')
+def test_run_with_invalid_package(mock_exit):
+    run(['test'])
+    mock_exit.assert_called_with(1)
+
+
+@patch('sys.exit')
+@patch('extract.parse_args')
+def test_run_with_keyboard_interrupt(mock_parse_args, mock_exit):
+    mock_parse_args.side_effect = KeyboardInterrupt
+    run([])
+    mock_exit.assert_called_with(1)
+
+
+@patch('sys.exit')
+@patch('extract.parse_args')
+def test_run_exits_with_runtime_error(mock_parse_args, mock_exit):
+    mock_parse_args.side_effect = RuntimeError
+    run([])
+    mock_exit.assert_called_with(1)
+
