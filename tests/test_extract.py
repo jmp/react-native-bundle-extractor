@@ -121,4 +121,3 @@ def test_run_exits_with_runtime_error(mock_parse_args, mock_exit):
     mock_parse_args.side_effect = RuntimeError
     run([])
     mock_exit.assert_called_with(1)
-
