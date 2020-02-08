@@ -2,8 +2,12 @@ import io
 import zipfile
 from unittest.mock import patch, Mock
 
-from extract import extract_bundle_from_apk, pull_apk_from_device, \
-    extract_bundle_from_device, run
+from extractor.extractor import (
+    pull_apk_from_device,
+    extract_bundle_from_apk,
+    extract_bundle_from_device,
+    run,
+)
 from .helpers import StringContaining
 
 
@@ -22,11 +26,11 @@ def test_extract_bundle_from_apk(tmp_path):
     assert bundle_out_path.read_text() == 'const a = 42;'
 
 
-@patch('extract.check_adb')
-@patch('extract.get_packages')
-@patch('extract.verify_package_exists')
-@patch('extract.find_package_path')
-@patch('extract.pull_path')
+@patch('extractor.extractor.check_adb')
+@patch('extractor.extractor.get_packages')
+@patch('extractor.extractor.verify_package_exists')
+@patch('extractor.extractor.find_package_path')
+@patch('extractor.extractor.pull_path')
 def test_pull_apk_from_device(
         mock_pull_path,
         mock_find_package_path,
@@ -50,8 +54,8 @@ def test_pull_apk_from_device(
 
 
 @patch('tempfile.NamedTemporaryFile')
-@patch('extract.pull_apk_from_device')
-@patch('extract.extract_bundle_from_apk')
+@patch('extractor.extractor.pull_apk_from_device')
+@patch('extractor.extractor.extract_bundle_from_apk')
 def test_extract_bundle_from_device(
         mock_extract_bundle_from_apk,
         mock_pull_apk_from_device,
@@ -68,9 +72,9 @@ def test_extract_bundle_from_device(
 
 @patch('sys.exit')
 @patch('sys.stderr.write')
-@patch('extract.is_apk', Mock())
-@patch('extract.extract_bundle_from_apk', Mock())
-@patch('extract.extract_bundle_from_device', Mock())
+@patch('extractor.extractor.is_apk', Mock())
+@patch('extractor.extractor.extract_bundle_from_apk', Mock())
+@patch('extractor.extractor.extract_bundle_from_device', Mock())
 def test_run_prints_usage_when_run_without_arguments(mock_write, mock_exit):
     run([])
     mock_write.assert_any_call(StringContaining('usage:'))
@@ -78,8 +82,8 @@ def test_run_prints_usage_when_run_without_arguments(mock_write, mock_exit):
 
 
 @patch('sys.exit', Mock())
-@patch('extract.is_apk', Mock(return_value=True))
-@patch('extract.extract_bundle_from_apk')
+@patch('extractor.extractor.is_apk', Mock(return_value=True))
+@patch('extractor.extractor.extract_bundle_from_apk')
 def test_run_with_existing_apk(mock_extract_bundle_from_apk):
     apk_path = 'app.apk'
     run([apk_path])
@@ -91,7 +95,7 @@ def test_run_with_existing_apk(mock_extract_bundle_from_apk):
 
 
 @patch('sys.exit', Mock())
-@patch('extract.extract_bundle_from_device')
+@patch('extractor.extractor.extract_bundle_from_device')
 def test_run_with_package(mock_extract_bundle_from_device):
     package = 'com.example.app'
     run([package])
@@ -108,7 +112,7 @@ def test_run_with_invalid_package(mock_exit):
 
 
 @patch('sys.exit')
-@patch('extract.parse_args')
+@patch('extractor.extractor.parse_args')
 def test_run_with_keyboard_interrupt(mock_parse_args, mock_exit):
     mock_parse_args.side_effect = KeyboardInterrupt
     run([])
@@ -116,7 +120,7 @@ def test_run_with_keyboard_interrupt(mock_parse_args, mock_exit):
 
 
 @patch('sys.exit')
-@patch('extract.parse_args')
+@patch('extractor.extractor.parse_args')
 def test_run_exits_with_runtime_error(mock_parse_args, mock_exit):
     mock_parse_args.side_effect = RuntimeError
     run([])
