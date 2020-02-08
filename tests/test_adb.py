@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 import pytest
 
 from extractor.adb import check_adb, ExecutableNotFoundError, get_packages, \
-    AdbError, find_package_path, pull_path, verify_package_exists, \
+    ExecuteError, find_package_path, pull_path, verify_package_exists, \
     NoSuchPackageError
 
 
@@ -40,7 +40,7 @@ def test_get_packages_adb_no_devices(mock_run):
         stdout=None,
         stderr=b'error: no devices/emulators found',
     )
-    with pytest.raises(AdbError):
+    with pytest.raises(ExecuteError):
         get_packages()
 
 
@@ -63,7 +63,7 @@ def test_find_package_path_does_not_exist(mock_run):
         stdout=None,
         stderr=b'\n',
     )
-    with pytest.raises(AdbError):
+    with pytest.raises(ExecuteError):
         assert find_package_path('this.does.not.exist')
 
 
@@ -84,7 +84,7 @@ def test_pull_path_does_not_exist(mock_run):
         stderr=b"adb: error: failed to stat remote object '/bar': No such "
                b"file or directory",
     )
-    with pytest.raises(AdbError):
+    with pytest.raises(ExecuteError):
         pull_path('/bar', './bar')
 
 

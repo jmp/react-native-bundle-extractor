@@ -1,9 +1,9 @@
 import re
 
-from .decorators import with_logging
+from .decorators import log
 
 
-@with_logging('Checking package format')
+@log('Checking package format')
 def is_valid_package_name(string):
     return bool(re.match(
         r'^[a-z]\w*(\.[a-z]\w*)+$',

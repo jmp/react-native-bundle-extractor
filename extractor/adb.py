@@ -1,14 +1,17 @@
 import shutil
 import subprocess
 
-from .decorators import with_logging
+from .decorators import log
+
+
+PACKAGE_PREFIX = 'package:'
 
 
 class ExecutableNotFoundError(RuntimeError):
     pass
 
 
-class AdbError(RuntimeError):
+class ExecuteError(RuntimeError):
     pass
 
 
@@ -16,7 +19,14 @@ class NoSuchPackageError(RuntimeError):
     pass
 
 
-@with_logging('Checking ADB')
+def execute(command):
+    result = subprocess.run(command.split(), capture_output=True)
+    if result.stderr:
+        raise ExecuteError(result.stderr.decode('utf-8'))
+    return result.stdout.decode('utf-8').strip()
+
+
+@log('Checking ADB')
 def check_adb():
     if shutil.which('adb') is None:
         raise ExecutableNotFoundError(
@@ -25,43 +35,24 @@ def check_adb():
         )
 
 
-@with_logging('Listing packages')
+@log('Listing packages')
 def get_packages():
-    result = subprocess.run(
-        'adb shell pm list packages'.split(),
-        capture_output=True,
-    )
-    if result.stderr:
-        raise AdbError(result.stderr.decode('utf-8'))
-    lines = result.stdout.strip().splitlines()
-    return [line.decode('utf-8').replace('package:', '') for line in lines]
+    result = execute('adb shell pm list packages')
+    return [line.replace(PACKAGE_PREFIX, '') for line in result.splitlines()]
 
 
-@with_logging('Finding package path')
+@log('Finding package path')
 def find_package_path(package):
-    result = subprocess.run(
-        f'adb shell pm path {package}'.split(),
-        capture_output=True,
-        check=True,
-    )
-    if result.stderr:
-        raise AdbError(result.stderr.decode('utf-8'))
-    return result.stdout.decode('utf-8').strip().replace('package:', '')
+    result = execute(f'adb shell pm path {package}')
+    return result.replace(PACKAGE_PREFIX, '')
 
 
-@with_logging('Pulling from device')
+@log('Pulling from device')
 def pull_path(path, out_path):
-    result = subprocess.run(
-        f'adb pull {path} {out_path}'.split(),
-        capture_output=True,
-        check=True,
-    )
-    if result.stderr:
-        raise AdbError(result.stderr.decode('utf-8'))
-    return result.stdout.decode('utf-8').strip()
+    return execute(f'adb pull {path} {out_path}')
 
 
-@with_logging('Finding package')
+@log('Finding package')
 def verify_package_exists(package, packages):
     if package not in packages:
         raise NoSuchPackageError(f'Package "{package}" was not found!')

@@ -1,13 +1,13 @@
 import zipfile
 
-from .decorators import with_logging
+from .decorators import log
 
 
 class BundleNotFoundError(RuntimeError):
     pass
 
 
-@with_logging('Extracting bundle')
+@log('Extracting bundle')
 def extract(zip_path, in_path, out_path):
     try:
         with zipfile.ZipFile(zip_path) as z:
@@ -18,7 +18,7 @@ def extract(zip_path, in_path, out_path):
         raise BundleNotFoundError(f'Bundle file "{in_path}" not found')
 
 
-@with_logging('Checking if APK exists')
+@log('Checking if APK exists')
 def is_apk(filename):
     def zip_contains(zip_file, name):
         return any(x == name for x in zip_file.namelist())

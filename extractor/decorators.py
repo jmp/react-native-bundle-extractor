@@ -1,7 +1,7 @@
 import functools
 
 
-def with_logging(message):
+def log(message):
     def decorator(function):
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
