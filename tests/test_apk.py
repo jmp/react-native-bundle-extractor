@@ -16,24 +16,18 @@ def create_zip(filenames):
 
 
 def test_extract_path_exists(tmp_path):
-    zip_bytes = io.BytesIO()
     txt_file_path = 'some/directory/test.txt'
-    with zipfile.ZipFile(zip_bytes, mode='w') as zf:
-        zf.writestr(txt_file_path, b'This is a test file.')
     zip_path = tmp_path / 'test_extract.zip'
-    zip_path.write_bytes(zip_bytes.getvalue())
+    zip_path.write_bytes(create_zip([txt_file_path]))
     out_path = tmp_path / 'test.txt'
     extract(zip_path, txt_file_path, out_path)
     with out_path.open('rt') as f:
-        assert f.read() == 'This is a test file.'
+        assert f.read() == f'this is {txt_file_path}'
 
 
 def test_extract_path_does_not_exist(tmp_path):
-    zip_bytes = io.BytesIO()
-    with zipfile.ZipFile(zip_bytes, mode='w'):
-        pass
     zip_path = tmp_path / 'test_extract.zip'
-    zip_path.write_bytes(zip_bytes.getvalue())
+    zip_path.write_bytes(create_zip([]))
     with pytest.raises(BundleNotFoundError):
         extract(zip_path, 'this/does/not/exist', tmp_path / 'tmp.txt')
 
