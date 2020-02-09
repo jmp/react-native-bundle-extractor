@@ -3,7 +3,16 @@ import zipfile
 
 import pytest
 
-from extractor.apk import extract, is_apk, BundleNotFoundError
+from extractor.apk import extract, is_apk, BundleNotFoundError, \
+    MANIFEST_FILENAME, CLASSES_FILENAME
+
+
+def create_zip(filenames):
+    zip_io = io.BytesIO()
+    with zipfile.ZipFile(zip_io, mode='w') as zf:
+        for filename in filenames:
+            zf.writestr(filename, f'this is {filename}')
+    return zip_io.getvalue()
 
 
 def test_extract_path_exists(tmp_path):
@@ -30,20 +39,26 @@ def test_extract_path_does_not_exist(tmp_path):
 
 
 def test_is_apk_succeeds_with_manifest_and_classes(tmp_path):
-    zip_bytes = io.BytesIO()
-    with zipfile.ZipFile(zip_bytes, mode='w') as zf:
-        zf.writestr('AndroidManifest.xml', b'')
-        zf.writestr('classes.dex', b'')
-    apk_path = tmp_path / 'valid_apk.apk'
-    apk_path.write_bytes(zip_bytes.getvalue())
+    apk_path = tmp_path / 'with_manifest_and_classes.apk'
+    apk_path.write_bytes(create_zip([MANIFEST_FILENAME, CLASSES_FILENAME]))
     assert is_apk(apk_path)
 
 
-def test_is_apk_fails_with_invalid_apk(tmp_path):
-    zip_bytes = io.BytesIO()
-    with zipfile.ZipFile(zip_bytes, mode='w') as zf:
-        zf.writestr('AndroidManifest.xml', b'')
-    apk_path = tmp_path / 'invalid_apk.apk'
+def test_is_apk_fails_with_manifest_only(tmp_path):
+    apk_path = tmp_path / 'with_manifest.apk'
+    apk_path.write_bytes(create_zip([MANIFEST_FILENAME]))
+    assert not is_apk(apk_path)
+
+
+def test_is_apk_fails_with_classes_only(tmp_path):
+    apk_path = tmp_path / 'with_classes.apk'
+    apk_path.write_bytes(create_zip([CLASSES_FILENAME]))
+    assert not is_apk(apk_path)
+
+
+def test_is_apk_fails_without_manifest_or_classes(tmp_path):
+    apk_path = tmp_path / 'without_manifest_or_classes.apk'
+    apk_path.write_bytes(create_zip([]))
     assert not is_apk(apk_path)
 
 

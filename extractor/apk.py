@@ -3,6 +3,10 @@ import zipfile
 from .decorators import log
 
 
+MANIFEST_FILENAME = 'AndroidManifest.xml'
+CLASSES_FILENAME = 'classes.dex'
+
+
 class BundleNotFoundError(RuntimeError):
     pass
 
@@ -25,7 +29,5 @@ def is_apk(filename):
     if not zipfile.is_zipfile(filename):
         return False
     with zipfile.ZipFile(filename, 'r') as z:
-        return all([
-            zip_contains(z, 'classes.dex') and
-            zip_contains(z, 'AndroidManifest.xml')
-        ])
+        return zip_contains(z, CLASSES_FILENAME) \
+               and zip_contains(z, MANIFEST_FILENAME)
