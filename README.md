@@ -1,6 +1,7 @@
 # react-native-bundle-extractor
 
 [![codecov](https://codecov.io/gh/jmp/react-native-bundle-extractor/branch/master/graph/badge.svg)](https://codecov.io/gh/jmp/react-native-bundle-extractor)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/jmp/react-native-bundle-extractor.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/jmp/react-native-bundle-extractor/context:python)
 
 This is a small utility for extracting the [React Native][1] JavaScript bundle
 file from an Android APK. It can fetch the bundle either from an APK file
