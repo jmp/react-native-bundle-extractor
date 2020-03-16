@@ -18,6 +18,8 @@ code will look like. It may convince you to obfuscate your JavaScript bundles.
 
     pip install -r requirements.txt
 
+[Python](https://python.org/) 3.8 or later is recommended.
+
 ## Usage
 
 To extract the bundle from an APK:
