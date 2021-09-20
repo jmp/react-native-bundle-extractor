@@ -1,2 +1,2 @@
 pytest==6.2.5
-jsbeautifier==1.10.3
+jsbeautifier==1.14.0
