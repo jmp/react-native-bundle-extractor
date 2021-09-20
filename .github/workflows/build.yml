@@ -1,4 +1,4 @@
-name: react-native-bundle-extractor
+name: build
 on: [push]
 jobs:
   build:
