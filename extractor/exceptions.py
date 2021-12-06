@@ -14,7 +14,7 @@ class PackageNotFoundError(ExtractorError):
     pass
 
 
-class BundleNotFoundError(ExtractorError):
+class FileNotFoundInAPKError(ExtractorError):
     pass
 
 

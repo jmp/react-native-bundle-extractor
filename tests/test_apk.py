@@ -3,8 +3,8 @@ import zipfile
 
 import pytest
 
-from extractor.apk import CLASSES_FILENAME, MANIFEST_FILENAME, extract, is_apk
-from extractor.exceptions import BundleNotFoundError
+from extractor.apk import CLASSES_FILENAME, MANIFEST_FILENAME, extract_file, is_apk
+from extractor.exceptions import FileNotFoundInAPKError
 
 
 def create_zip(filenames):
@@ -15,21 +15,21 @@ def create_zip(filenames):
     return zip_io.getvalue()
 
 
-def test_extract_path_exists(tmp_path):
+def test_extract_file_path_exists(tmp_path):
     txt_file_path = "some/directory/test.txt"
     zip_path = tmp_path / "test_extract.zip"
     zip_path.write_bytes(create_zip([txt_file_path]))
     out_path = tmp_path / "test.txt"
-    extract(zip_path, txt_file_path, out_path)
+    extract_file(zip_path, txt_file_path, out_path)
     with out_path.open("rt") as f:
         assert f.read() == f"this is {txt_file_path}"
 
 
-def test_extract_path_does_not_exist(tmp_path):
+def test_extract_file_path_does_not_exist(tmp_path):
     zip_path = tmp_path / "test_extract.zip"
     zip_path.write_bytes(create_zip([]))
-    with pytest.raises(BundleNotFoundError):
-        extract(zip_path, "this/does/not/exist", tmp_path / "tmp.txt")
+    with pytest.raises(FileNotFoundInAPKError):
+        extract_file(zip_path, "this/does/not/exist", tmp_path / "tmp.txt")
 
 
 def test_is_apk_succeeds_with_manifest_and_classes(tmp_path):

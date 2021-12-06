@@ -8,7 +8,7 @@ from .adb import (
     pull_path,
     verify_package_exists,
 )
-from .apk import extract, is_apk
+from .apk import extract_file, is_apk
 from .args import parse_args
 from .bundle import beautify
 from .exceptions import InvalidArgumentError
@@ -16,7 +16,7 @@ from .package import is_valid_package_name
 
 
 def extract_bundle_from_apk(path, bundle_in_path, bundle_out_path):
-    extract(path, bundle_in_path, bundle_out_path)
+    extract_file(path, bundle_in_path, bundle_out_path)
     beautify(bundle_out_path, bundle_out_path)
 
 
