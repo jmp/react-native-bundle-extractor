@@ -34,7 +34,7 @@ def extract_bundle_from_device(package, bundle_in_path, bundle_out_path):
         extract_bundle_from_apk(f.name, bundle_in_path, bundle_out_path)
 
 
-def run(args):
+def extract_bundle(args):
     try:
         parsed_args = parse_args(args)
         source = parsed_args.source

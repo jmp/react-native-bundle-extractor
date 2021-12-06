@@ -2,7 +2,7 @@
 
 import sys
 
-from extractor.extractor import run
+from extractor.extractor import extract_bundle
 
 if __name__ == "__main__":
-    run(sys.argv[1:])
+    extract_bundle(sys.argv[1:])

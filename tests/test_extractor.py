@@ -3,10 +3,10 @@ import zipfile
 from unittest.mock import Mock, patch
 
 from extractor.extractor import (
+    extract_bundle,
     extract_bundle_from_apk,
     extract_bundle_from_device,
     pull_apk_from_device,
-    run,
 )
 
 from .helpers import StringContaining
@@ -82,8 +82,8 @@ def test_extract_bundle_from_device(
 @patch("extractor.extractor.is_apk", Mock())
 @patch("extractor.extractor.extract_bundle_from_apk", Mock())
 @patch("extractor.extractor.extract_bundle_from_device", Mock())
-def test_run_prints_usage_when_run_without_arguments(mock_write, mock_exit):
-    run([])
+def test_extract_bundle_prints_usage_when_run_without_arguments(mock_write, mock_exit):
+    extract_bundle([])
     mock_write.assert_any_call(StringContaining("usage:"))
     mock_exit.assert_called_with(0)
 
@@ -91,9 +91,9 @@ def test_run_prints_usage_when_run_without_arguments(mock_write, mock_exit):
 @patch("sys.exit", Mock())
 @patch("extractor.extractor.is_apk", Mock(return_value=True))
 @patch("extractor.extractor.extract_bundle_from_apk")
-def test_run_with_existing_apk(mock_extract_bundle_from_apk):
+def test_extract_bundle_with_existing_apk(mock_extract_bundle_from_apk):
     apk_path = "app.apk"
-    run([apk_path])
+    extract_bundle([apk_path])
     mock_extract_bundle_from_apk.assert_called_with(
         apk_path,
         "assets/index.android.bundle",
@@ -103,9 +103,9 @@ def test_run_with_existing_apk(mock_extract_bundle_from_apk):
 
 @patch("sys.exit", Mock())
 @patch("extractor.extractor.extract_bundle_from_device")
-def test_run_with_package(mock_extract_bundle_from_device):
+def test_extract_bundle_with_package(mock_extract_bundle_from_device):
     package = "com.example.app"
-    run([package])
+    extract_bundle([package])
     mock_extract_bundle_from_device.assert_called_with(
         package,
         "assets/index.android.bundle",
@@ -114,22 +114,22 @@ def test_run_with_package(mock_extract_bundle_from_device):
 
 
 @patch("sys.exit")
-def test_run_with_invalid_package(mock_exit):
-    run(["test"])
+def test_extract_bundle_with_invalid_package(mock_exit):
+    extract_bundle(["test"])
     mock_exit.assert_called_with(1)
 
 
 @patch("sys.exit")
 @patch("extractor.extractor.parse_args")
-def test_run_with_keyboard_interrupt(mock_parse_args, mock_exit):
+def test_extract_bundle_with_keyboard_interrupt(mock_parse_args, mock_exit):
     mock_parse_args.side_effect = KeyboardInterrupt
-    run([])
+    extract_bundle([])
     mock_exit.assert_called_with(1)
 
 
 @patch("sys.exit")
 @patch("extractor.extractor.parse_args")
-def test_run_exits_with_runtime_error(mock_parse_args, mock_exit):
+def test_extract_bundle_exits_with_runtime_error(mock_parse_args, mock_exit):
     mock_parse_args.side_effect = RuntimeError
-    run([])
+    extract_bundle([])
     mock_exit.assert_called_with(1)
