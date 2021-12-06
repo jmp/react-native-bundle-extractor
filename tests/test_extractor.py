@@ -9,8 +9,6 @@ from extractor.extractor import (
     pull_apk_from_device,
 )
 
-from .helpers import StringContaining
-
 
 def test_extract_bundle_from_apk(tmp_path):
     bundle_in_path = "assets/index.android.bundle"
@@ -78,13 +76,13 @@ def test_extract_bundle_from_device(
 
 
 @patch("sys.exit")
-@patch("sys.stderr.write")
 @patch("extractor.extractor.is_apk", Mock())
 @patch("extractor.extractor.extract_bundle_from_apk", Mock())
 @patch("extractor.extractor.extract_bundle_from_device", Mock())
-def test_extract_bundle_prints_usage_when_run_without_arguments(mock_write, mock_exit):
+def test_extract_bundle_prints_usage_when_run_without_arguments(mock_exit, capsys):
     extract_bundle([])
-    mock_write.assert_any_call(StringContaining("usage:"))
+    captured = capsys.readouterr()
+    assert captured.err.startswith("usage:")
     mock_exit.assert_called_with(0)
 
 

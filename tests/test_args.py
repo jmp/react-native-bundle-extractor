@@ -1,17 +1,13 @@
-from unittest.mock import patch
-
 import pytest
 
 from extractor.args import parse_args
 
-from .helpers import StringContaining
 
-
-@patch("sys.stderr.write")
-def test_parse_args_exits_with_usage_if_invalid_arguments(mock_stderr_write):
+def test_parse_args_exits_with_usage_if_invalid_arguments(capsys):
     with pytest.raises(SystemExit):
         parse_args([])
-    mock_stderr_write.assert_any_call(StringContaining("usage:"))
+    captured = capsys.readouterr()
+    assert captured.err.startswith("usage:")
 
 
 def test_parse_args_takes_apk_or_package_as_first_argument():
