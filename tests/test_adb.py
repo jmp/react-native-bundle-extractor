@@ -12,7 +12,7 @@ from extractor.adb import (
 from extractor.exceptions import (
     ExecutableNotFoundError,
     ExecuteError,
-    NoSuchPackageError,
+    PackageNotFoundError,
 )
 
 
@@ -106,5 +106,5 @@ def test_verify_package_exists_success():
 
 
 def test_verify_package_exists_failure():
-    with pytest.raises(NoSuchPackageError):
+    with pytest.raises(PackageNotFoundError):
         verify_package_exists("com.example.app", [])

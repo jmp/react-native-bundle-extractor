@@ -2,7 +2,7 @@ import shutil
 import subprocess
 
 from .decorators import log
-from .exceptions import ExecutableNotFoundError, ExecuteError, NoSuchPackageError
+from .exceptions import ExecutableNotFoundError, ExecuteError, PackageNotFoundError
 
 PACKAGE_PREFIX = "package:"
 
@@ -43,4 +43,4 @@ def pull_path(path, out_path):
 @log("Finding package")
 def verify_package_exists(package, packages):
     if package not in packages:
-        raise NoSuchPackageError(f'Package "{package}" was not found!')
+        raise PackageNotFoundError(f'Package "{package}" was not found!')

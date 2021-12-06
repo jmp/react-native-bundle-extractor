@@ -6,7 +6,7 @@ class ExecutableNotFoundError(RuntimeError):
     pass
 
 
-class NoSuchPackageError(RuntimeError):
+class PackageNotFoundError(RuntimeError):
     pass
 
 
