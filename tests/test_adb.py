@@ -1,3 +1,5 @@
+from os import environ
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -16,17 +18,16 @@ from extractor.exceptions import (
 )
 
 
-@patch("shutil.which")
-def test_check_adb_raises_exception_if_adb_not_in_path(mock_which):
-    mock_which.return_value = None
-    with pytest.raises(ExecutableNotFoundError):
+def test_check_adb_raises_exception_if_adb_not_in_path():
+    with patch.dict(environ, {"PATH": ""}):
+        with pytest.raises(ExecutableNotFoundError):
+            check_adb()
+
+
+def test_check_adb_does_not_raise_exception_if_adb_is_in_path():
+    adb_path = str(Path(__file__).parent / "bin")
+    with patch.dict(environ, {"PATH": adb_path}):
         check_adb()
-
-
-@patch("shutil.which")
-def test_check_adb_does_not_raise_exception_if_adb_is_in_path(mock_which):
-    mock_which.return_value = "/usr/bin/adb"
-    check_adb()
 
 
 @patch("subprocess.run")
