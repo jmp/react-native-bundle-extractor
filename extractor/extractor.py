@@ -46,11 +46,7 @@ def run(args):
             raise InvalidArgumentError(
                 f'"{source}" is not an APK or an Android package name.'
             )
-        extract_func(
-            parsed_args.source,
-            f"assets/{parsed_args.bundle}",
-            parsed_args.out,
-        )
+        extract_func(source, f"assets/{parsed_args.bundle}", parsed_args.out)
         sys.exit(0)
     except KeyboardInterrupt:
         sys.exit(1)
