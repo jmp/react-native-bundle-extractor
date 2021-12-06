@@ -37,24 +37,20 @@ def extract_bundle_from_device(package, bundle_in_path, bundle_out_path):
 def run(args):
     try:
         parsed_args = parse_args(args)
-        bundle_in_path = f"assets/{parsed_args.bundle}"
-        bundle_out_path = parsed_args.out
-        if is_apk(parsed_args.source):
-            extract_bundle_from_apk(
-                parsed_args.source,
-                bundle_in_path,
-                bundle_out_path,
-            )
-        elif is_valid_package_name(parsed_args.source):
-            extract_bundle_from_device(
-                parsed_args.source,
-                bundle_in_path,
-                bundle_out_path,
-            )
+        source = parsed_args.source
+        if is_apk(source):
+            extract_func = extract_bundle_from_apk
+        elif is_valid_package_name(source):
+            extract_func = extract_bundle_from_device
         else:
             raise InvalidArgumentError(
-                f'"{parsed_args.source}" is not an APK or an ' f"Android package name."
+                f'"{source}" is not an APK or an Android package name.'
             )
+        extract_func(
+            parsed_args.source,
+            f"assets/{parsed_args.bundle}",
+            parsed_args.out,
+        )
         sys.exit(0)
     except KeyboardInterrupt:
         sys.exit(1)
