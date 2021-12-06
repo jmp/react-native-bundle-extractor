@@ -18,16 +18,15 @@ from extractor.exceptions import (
 )
 
 
+@patch.dict(environ, {"PATH": ""})
 def test_check_adb_raises_exception_if_adb_not_in_path():
-    with patch.dict(environ, {"PATH": ""}):
-        with pytest.raises(ExecutableNotFoundError):
-            check_adb()
-
-
-def test_check_adb_does_not_raise_exception_if_adb_is_in_path():
-    adb_path = str(Path(__file__).parent / "bin")
-    with patch.dict(environ, {"PATH": adb_path}):
+    with pytest.raises(ExecutableNotFoundError):
         check_adb()
+
+
+@patch.dict(environ, {"PATH": str(Path(__file__).parent / "bin")})
+def test_check_adb_does_not_raise_exception_if_adb_is_in_path():
+    check_adb()
 
 
 @patch("subprocess.run")
