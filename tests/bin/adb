@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""A fake ADB that returns canned responses to common ADB commands."""
 
 import pathlib
 import sys
