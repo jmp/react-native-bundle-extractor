@@ -2,20 +2,9 @@ import shutil
 import subprocess
 
 from .decorators import log
+from .exceptions import ExecutableNotFoundError, ExecuteError, NoSuchPackageError
 
 PACKAGE_PREFIX = "package:"
-
-
-class ExecutableNotFoundError(RuntimeError):
-    pass
-
-
-class ExecuteError(RuntimeError):
-    pass
-
-
-class NoSuchPackageError(RuntimeError):
-    pass
 
 
 def execute(command):

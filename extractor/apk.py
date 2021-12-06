@@ -1,13 +1,10 @@
 import zipfile
 
 from .decorators import log
+from .exceptions import BundleNotFoundError
 
 MANIFEST_FILENAME = "AndroidManifest.xml"
 CLASSES_FILENAME = "classes.dex"
-
-
-class BundleNotFoundError(RuntimeError):
-    pass
 
 
 @log("Extracting bundle")

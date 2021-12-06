@@ -3,13 +3,8 @@ import zipfile
 
 import pytest
 
-from extractor.apk import (
-    CLASSES_FILENAME,
-    MANIFEST_FILENAME,
-    BundleNotFoundError,
-    extract,
-    is_apk,
-)
+from extractor.apk import CLASSES_FILENAME, MANIFEST_FILENAME, extract, is_apk
+from extractor.exceptions import BundleNotFoundError
 
 
 def create_zip(filenames):
