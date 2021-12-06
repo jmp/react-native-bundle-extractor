@@ -3,16 +3,15 @@ import tempfile
 
 from .adb import (
     check_adb,
-    get_packages,
-    verify_package_exists,
     find_package_path,
+    get_packages,
     pull_path,
+    verify_package_exists,
 )
-from .apk import is_apk
+from .apk import extract, is_apk
 from .args import parse_args
-from .package import is_valid_package_name
 from .bundle import beautify
-from .apk import extract
+from .package import is_valid_package_name
 
 
 def extract_bundle_from_apk(path, bundle_in_path, bundle_out_path):
@@ -37,7 +36,7 @@ def extract_bundle_from_device(package, bundle_in_path, bundle_out_path):
 def run(args):
     try:
         parsed_args = parse_args(args)
-        bundle_in_path = f'assets/{parsed_args.bundle}'
+        bundle_in_path = f"assets/{parsed_args.bundle}"
         bundle_out_path = parsed_args.out
         if is_apk(parsed_args.source):
             extract_bundle_from_apk(
@@ -52,8 +51,9 @@ def run(args):
                 bundle_out_path,
             )
         else:
-            raise RuntimeError(f'"{parsed_args.source}" is not an APK or an '
-                               f'Android package name.')
+            raise RuntimeError(
+                f'"{parsed_args.source}" is not an APK or an ' f"Android package name."
+            )
         sys.exit(0)
     except KeyboardInterrupt:
         sys.exit(1)

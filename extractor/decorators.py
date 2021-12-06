@@ -6,12 +6,14 @@ def log(message):
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
             try:
-                print(f'{message}...', end=' ')
+                print(f"{message}...", end=" ")
                 result = function(*args, **kwargs)
-                print('OK')
+                print("OK")
                 return result
             except Exception:
-                print('FAIL')
+                print("FAIL")
                 raise
+
         return wrapper
+
     return decorator
