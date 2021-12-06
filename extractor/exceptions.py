@@ -1,14 +1,18 @@
-class ExecuteError(RuntimeError):
+class ExtractorError(RuntimeError):
     pass
 
 
-class ExecutableNotFoundError(RuntimeError):
+class ExecuteError(ExtractorError):
     pass
 
 
-class PackageNotFoundError(RuntimeError):
+class ExecutableNotFoundError(ExtractorError):
     pass
 
 
-class BundleNotFoundError(RuntimeError):
+class PackageNotFoundError(ExtractorError):
+    pass
+
+
+class BundleNotFoundError(ExtractorError):
     pass
