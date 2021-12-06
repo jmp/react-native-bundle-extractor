@@ -19,11 +19,10 @@ def test_extract_bundle_from_apk(tmp_path):
 
 
 def test_extract_bundle_from_device(tmp_path):
-    package = "com.example.app"
-    adb_path = Path(__file__).parent / "bin"
     bundle_out_path = tmp_path / "index.android.bundle.out"
+    adb_path = Path(__file__).parent / "bin"
     subprocess.run(
-        [script_path, package, "--out", bundle_out_path],
+        [script_path, "com.example.app", "--out", bundle_out_path],
         env={"PATH": f"{adb_path}{os.pathsep}{os.environ['PATH']}"},
     )
     assert bundle_out_path.exists()
