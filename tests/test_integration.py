@@ -12,7 +12,7 @@ def test_extract_bundle_from_apk(tmp_path):
     with zipfile.ZipFile(apk_path, mode="w") as zf:
         zf.writestr("AndroidManifest.xml", b"")
         zf.writestr("classes.dex", b"")
-        zf.writestr(f"assets/index.android.bundle", b"const a=100 ;")
+        zf.writestr("assets/index.android.bundle", b"const a=100 ;")
     subprocess.run([script_path, apk_path, "--out", bundle_out_path])
     assert bundle_out_path.exists()
     assert bundle_out_path.read_text() == "const a = 100;"
