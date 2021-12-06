@@ -11,6 +11,7 @@ from .adb import (
 from .apk import extract, is_apk
 from .args import parse_args
 from .bundle import beautify
+from .exceptions import InvalidArgumentError
 from .package import is_valid_package_name
 
 
@@ -51,7 +52,7 @@ def run(args):
                 bundle_out_path,
             )
         else:
-            raise RuntimeError(
+            raise InvalidArgumentError(
                 f'"{parsed_args.source}" is not an APK or an ' f"Android package name."
             )
         sys.exit(0)

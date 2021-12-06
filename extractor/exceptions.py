@@ -16,3 +16,7 @@ class PackageNotFoundError(ExtractorError):
 
 class BundleNotFoundError(ExtractorError):
     pass
+
+
+class InvalidArgumentError(ExtractorError):
+    pass
