@@ -1,7 +1,10 @@
 import io
+import os
 import subprocess
 import zipfile
 from pathlib import Path
+
+script_path = Path(__file__).parent.parent / "extract.py"
 
 
 def test_extract_bundle_from_apk(tmp_path):
@@ -15,9 +18,21 @@ def test_extract_bundle_from_apk(tmp_path):
         zf.writestr(bundle_in_path, b"const a=100 ;")
     apk_path = tmp_path / "test_extract.apk"
     apk_path.write_bytes(zip_bytes.getvalue())
-    script_path = Path(__file__).parent.parent / "extract.py"
     subprocess.run(
         [script_path, "--bundle", bundle_name, apk_path, "--out", bundle_out_path]
+    )
+    assert bundle_out_path.exists()
+    assert bundle_out_path.read_text() == "const a = 100;"
+
+
+def test_extract_bundle_from_device(tmp_path):
+    package = "com.example.app"
+    bundle_name = "index.android.bundle"
+    adb_path = Path(__file__).parent / "bin"
+    bundle_out_path = tmp_path / "index.android.bundle.out"
+    subprocess.run(
+        [script_path, "--bundle", bundle_name, package, "--out", bundle_out_path],
+        env={"PATH": f"{adb_path}{os.pathsep}{os.environ['PATH']}"},
     )
     assert bundle_out_path.exists()
     assert bundle_out_path.read_text() == "const a = 100;"
