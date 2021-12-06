@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+import io
+import pathlib
+import sys
+import zipfile
+
+command = " ".join(sys.argv[1:])
+
+if command == "shell pm list packages":
+    print(
+        """package:com.android.cts.priv.ctsshim
+package:com.android.internal.display.cutout.emulation.corner
+package:com.android.providers.telephony
+package:com.example.app"""
+    )
+elif command == "shell pm path com.example.app":
+    print("package:/data/app/com.example.app-RGW6eku5yrzZ062ftW4_7Q==/base.apk")
+elif command.startswith(
+    "pull /data/app/com.example.app-RGW6eku5yrzZ062ftW4_7Q==/base.apk "
+):
+    zip_bytes = io.BytesIO()
+    with zipfile.ZipFile(zip_bytes, mode="w") as zf:
+        zf.writestr("AndroidManifest.xml", b"")
+        zf.writestr("classes.dex", b"")
+        zf.writestr("assets/index.android.bundle", b"const a=100 ;")
+    apk_path = pathlib.Path(command.rsplit(" ")[-1])
+    apk_path.write_bytes(zip_bytes.getvalue())
+    print("/base.apk: 1 file pulled. 144.3 MB/s (23917112 bytes in 0.158s)")
