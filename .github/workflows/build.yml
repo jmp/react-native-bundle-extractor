@@ -10,7 +10,7 @@ jobs:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
     - run: pip install -r requirements.txt
-    - run: flake8 .
+    - run: ./lint.sh
     - run: pytest --cov=. --cov-report=xml
     - uses: codecov/codecov-action@v2
       with:
