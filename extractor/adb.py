@@ -4,8 +4,6 @@ import subprocess
 from .decorators import log
 from .exceptions import ExecutableNotFoundError, ExecuteError, PackageNotFoundError
 
-PACKAGE_PREFIX = "package:"
-
 
 @log("Checking ADB")
 def check_adb():
@@ -19,13 +17,13 @@ def check_adb():
 @log("Listing packages")
 def get_packages():
     result = _execute("adb shell pm list packages")
-    return [line.replace(PACKAGE_PREFIX, "") for line in result.splitlines()]
+    return [_strip_package_prefix(line) for line in result.splitlines()]
 
 
 @log("Finding package path")
 def find_package_path(package):
     result = _execute(f"adb shell pm path {package}")
-    return result.replace(PACKAGE_PREFIX, "")
+    return _strip_package_prefix(result)
 
 
 @log("Pulling from device")
@@ -44,3 +42,7 @@ def _execute(command):
     if result.stderr:
         raise ExecuteError(result.stderr.decode("utf-8"))
     return result.stdout.decode("utf-8").strip()
+
+
+def _strip_package_prefix(string):
+    return string.replace("package:", "")
