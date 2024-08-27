@@ -4,14 +4,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
     - run: pip install -r requirements.txt
     - run: ./lint.sh
     - run: pytest --cov=. --cov-report=xml
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v4
       with:
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
