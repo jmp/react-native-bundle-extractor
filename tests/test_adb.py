@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from os import environ
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -18,6 +19,11 @@ from extractor.exceptions import (
 )
 
 
+@contextmanager
+def does_not_raise():
+    yield
+
+
 @patch.dict(environ, {"PATH": ""})
 def test_check_adb_raises_exception_if_adb_not_in_path():
     with pytest.raises(ExecutableNotFoundError):
@@ -26,7 +32,8 @@ def test_check_adb_raises_exception_if_adb_not_in_path():
 
 @patch.dict(environ, {"PATH": str(Path(__file__).parent / "bin")})
 def test_check_adb_does_not_raise_exception_if_adb_is_in_path():
-    check_adb()
+    with does_not_raise():
+        check_adb()
 
 
 @patch("subprocess.run")
@@ -102,7 +109,8 @@ def test_pull_path_does_not_exist(mock_run):
 
 
 def test_verify_package_exists_success():
-    verify_package_exists("com.example.app", ["com.example.app"])
+    with does_not_raise():
+        verify_package_exists("com.example.app", ["com.example.app"])
 
 
 def test_verify_package_exists_failure():
