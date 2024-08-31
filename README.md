@@ -38,5 +38,5 @@ To customize the bundle filename, you can pass an additional parameter:
 
     pytest
 
-[1]: https://facebook.github.io/react-native/
+[1]: https://reactnative.dev/
 [2]: https://pypi.org/project/jsbeautifier/
